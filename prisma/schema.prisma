@@ -1,0 +1,45 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id               Int      @id @default(autoincrement())
+  firstname        String?
+  lastname         String?
+  username         String?
+  image            String?
+  email            String   @unique
+  password         String
+  account_verified Boolean? @default(true)
+  created_at       DateTime @default(now())
+  updated_at       DateTime @default(now())
+
+  //Relations
+  cars Cars[]
+  moto Motorcycle?
+}
+
+model Cars {
+  id      Int     @id @default(autoincrement())
+  name    String?
+  model   String?
+  id_user Int
+
+  //Relations
+  user Users @relation(fields: [id_user], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Motorcycle {
+  id     Int     @id @default(autoincrement())
+  name   String?
+  model  String?
+  userId Int     @unique
+
+  //Relations
+  user Users @relation(fields: [userId], references: [id])
+}
